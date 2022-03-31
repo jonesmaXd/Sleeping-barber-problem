@@ -1,11 +1,16 @@
-import java.time.LocalTime;
-import java.util.Date;
+package no.ntnu;
 
+/**
+ *
+ */
 public class Customer implements Runnable {
 
     private int customerId;
     private BarberShop barberShop;
 
+    /**
+     *
+     */
     @Override
     public void run() {
         getHairCut();

@@ -1,5 +1,8 @@
-import java.time.LocalTime;
+package no.ntnu;
 
+/**
+ *
+ */
 public class Barber implements Runnable {
 
     private int barberId;
@@ -10,6 +13,9 @@ public class Barber implements Runnable {
         this.barberId = barberId;
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
         while (true) {

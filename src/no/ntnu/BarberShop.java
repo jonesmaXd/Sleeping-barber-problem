@@ -1,7 +1,8 @@
+package no.ntnu;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,7 +17,6 @@ public class BarberShop {
     private int numberOfChairs;
     private Date currentTime;
     private LinkedList<Customer> waitingList;
-    private  Random random = new Random();
 
     public BarberShop(AtomicBoolean shopOpen,
                       AtomicInteger customersCut,
@@ -24,8 +24,7 @@ public class BarberShop {
                       int numberOfChairs,
                       int numberOfBarbers,
                       int availableBarbers,
-                      int numberOfCustomers,
-                      Date currentTime) {
+                      int numberOfCustomers) {
         this.shopOpen = shopOpen;
         this.customersCut = customersCut;
         this.customersLost = customersLost;
@@ -33,7 +32,6 @@ public class BarberShop {
         this.numberOfBarbers = numberOfBarbers;
         this.numberOfChairs = numberOfChairs;
         this.numberOfCustomers = numberOfCustomers;
-        this.currentTime = currentTime;
         this.waitingList = new LinkedList<>();
     }
 
@@ -62,11 +60,6 @@ public class BarberShop {
         this.customersLost = customersLost;
     }
 
-    public String getCurrentTime() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        return formatter.format(currentTime);
-    }
-
 
     /**
      *  Simulates cutting the hair of a customer
@@ -80,7 +73,7 @@ public class BarberShop {
 
             //If there are no customers, go to sleep
             if (waitingList.size() == 0 ) {
-                System.out.println("Barber " + barberId +
+                System.out.println("no.ntnu.Barber " + barberId +
                         " goes to sleep, waiting for next customer");
                 //Sleep until a customer arrives
                 try {
@@ -92,22 +85,22 @@ public class BarberShop {
                   }
                     else {
                 customer = waitingList.pollFirst();
-                System.out.println("Customer " + customer.getCustomerId() +
+                System.out.println("no.ntnu.Customer " + customer.getCustomerId() +
                 " wakes up the barber and proceeds to get a haircut");
 
                 try {
 
-                    //Barber is unavailable as it cuts the hair of a customer
+                    //no.ntnu.Barber is unavailable as it cuts the hair of a customer
                     availableBarbers--;
-                    System.out.println("Barber " + barberId +
+                    System.out.println("no.ntnu.Barber " + barberId +
                             " is cutting the hair of customer " +
                             customer.getCustomerId() + " so the customer sleeps");
 
                     //A random millisecond number between 4000 and 500
-                    millisDelay = random.nextInt(4000 - 500) + 500;
+                    millisDelay = utility.Utility.getRandomNumberInRange(4000, 500);
                     Thread.sleep(millisDelay);
 
-                    System.out.println("Customer " + customer.getCustomerId() +
+                    System.out.println("no.ntnu.Customer " + customer.getCustomerId() +
                             " has recieved a haircut by barber " + barberId
                               + " in " + millisDelay + "milliseconds, and leaves the shop");
 
@@ -115,7 +108,7 @@ public class BarberShop {
 
                     //Checks if new customers have entered the shop
                     if (waitingList.size() > 0) {
-                        System.out.println("Barber " + barberId +
+                        System.out.println("no.ntnu.Barber " + barberId +
                                 "wakes up a waiting customer in line");
                     }
 
@@ -134,17 +127,19 @@ public class BarberShop {
      * 1. If the barber is available - Sleeping, the barber will cut the customer's hair
      * 2. If the barber is busy cutting some other customer's hair, the customer will sit down and sleep.
      * 3. However, if there is no empty chair to sit in, the customer will leave.
-     * @param customer
+     * This method is synchronized so that multiple threads don't access it at the same time,
+     * because it could lead to problems when a customer is added to the waiting list.
+     * @param customer the customer to be added
      */
     public void addNewCustomer(Customer customer) {
-        System.out.println("\n Customer " + customer.getCustomerId()
-                + " entered the barber shop" + getCurrentTime());
+        System.out.println("\n no.ntnu.Customer " + customer.getCustomerId()
+                + " entered the barber shop" + utility.Utility.getCurrentTime());
 
         synchronized (waitingList) {
 
             //Check if there are any available chairs
             if (waitingList.size() == numberOfChairs) {
-                System.out.println("\n No chair is available " + customer.getCustomerId() +
+                System.out.println("\n No chair is available, customer " + customer.getCustomerId() +
                         " Leaves the barber shop");
                 customersLost.incrementAndGet();
                 return;
@@ -156,7 +151,7 @@ public class BarberShop {
 
             } else {
 
-                System.out.println("There are no available barbers, " + customer.getCustomerId() +
+                System.out.println("\n There are no available barbers, customer " + customer.getCustomerId() +
                         " Sits down on an empty chair");
                 if (waitingList.size() == 1) {
                     waitingList.addLast(customer);
