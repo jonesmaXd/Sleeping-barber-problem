@@ -82,7 +82,13 @@ public class BarberShop {
     }
 
     /**
-     * Simulates cutting the hair of a customer
+     * Simulates a barber in the barber shop. If there are no customers,
+     * the barber will go to sleep and wait.
+     * When a customer arrives and wakes up the barber, the barber
+     * will cut the customer's hair. While the barber is busy
+     * cutting hair the barber will not do any other tasks.
+     *
+     * @param barberId a created barber's id to
      */
     public void cutHair(int barberId) {
 
@@ -137,6 +143,7 @@ public class BarberShop {
                         " wakes up a waiting customer in line");
             }
 
+            //Since the barber is done cutting hair it becomes available again
             availableBarbers++;
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());

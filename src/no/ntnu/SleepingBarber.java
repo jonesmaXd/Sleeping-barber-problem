@@ -6,13 +6,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
 /**
- *
+ * The main class of the sleeping barber problem. Its main purpose is to simulate the problem.
  */
 public class SleepingBarber {
 
     /**
+     * Simulates the sleeping barber problem.
      *
-     * @throws InterruptedException
+     * @throws InterruptedException if executor service encounters a problem shutting down
      */
     public void runSimulation() throws InterruptedException {
         int numberOfCustomers;
@@ -52,14 +53,18 @@ public class SleepingBarber {
 
 
                 try {
-                    //Each of the customer threads sleep
+                    //Makes each customer thread sleep a number of milliseconds between 4000 and 500
+                    //This is to simulate the delay between each customer entering the barber shop
                     Thread.sleep(utility.Utility.getRandomNumberInRange(4000, 500));
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
 
             }
+            //Shuts down the executor service
             executorService.shutdown();
+
+            //Waits 5 seconds for all the threads to finish
             executorService.awaitTermination(5, SECONDS);
             barberShop.closeShop();
 
@@ -81,31 +86,36 @@ public class SleepingBarber {
     }
 
     /**
+     * A custom method which asks for and reads user input to get the total number of
+     * an item in the barber shop.
      *
-     * @param expectedResponseVariable
-     * @return
+     * @param itemToRequestNumberOf the item to request amount of.
+     * @return the total number of the item.
      */
-    private int getUserIntResponse(String expectedResponseVariable) {
+    private int getUserIntResponse(String itemToRequestNumberOf) {
         Scanner sc = new Scanner(System.in);
         int userinput = 1;
 
         try {
-            System.out.println("Please enter the number of " + expectedResponseVariable + "(s) in the shop:");
+            System.out.println("Please enter the number of " + itemToRequestNumberOf + "(s) in the shop:");
             userinput = sc.nextInt();
             while (userinput < 0) {
-                System.out.println("The amount of " + expectedResponseVariable +"(s) have to be a positive number \n" +
+                System.out.println("The amount of " + itemToRequestNumberOf +"(s) have to be a positive number \n" +
                         "Please try again");
                 userinput = sc.nextInt();
             }
         } catch (InputMismatchException e) {
             int randomNumber =  utility.Utility.getRandomNumberInRange(50, 1);
             System.out.println("Invalid value detected, using a randomly generated number for " +
-                    expectedResponseVariable + "(s): " + randomNumber);
+                    itemToRequestNumberOf + "(s): " + randomNumber);
             userinput = randomNumber;
         }
         return userinput;
     }
 
+    /**
+     * Starts the application and runs the simulation.
+     */
     public static void main(String[] args) {
         SleepingBarber sleepingBarber = new SleepingBarber();
         try {
