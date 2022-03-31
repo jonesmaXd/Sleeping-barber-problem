@@ -32,11 +32,11 @@ public class BarberShop {
         return shopOpen;
     }
 
-    private void closeShop() {
+    public void closeShop() {
         shopOpen = false;
     }
 
-    private void openShop() {
+    public void openShop() {
         shopOpen = true;
     }
 
@@ -70,7 +70,7 @@ public class BarberShop {
             //If there are no customers, go to sleep
             while (waitingList.size() == 0) {
 
-                System.out.println("Barber " + barberId +
+                System.out.println("\nBarber " + barberId +
                         " goes to sleep, waiting for next customer");
 
                 //Sleep until a customer arrives
@@ -85,7 +85,7 @@ public class BarberShop {
             customer = waitingList.pollFirst();
 
             System.out.println("Customer " + customer.getCustomerId() +
-                    " wakes up the barber and proceeds to get a haircut");
+                    " wakes up the barber and proceeds to get a haircut \n");
         }
 
                 try {
@@ -95,22 +95,22 @@ public class BarberShop {
 
                     System.out.println("Barber " + barberId +
                             " is cutting the hair of customer " +
-                            customer.getCustomerId() + " so the customer sleeps");
+                            customer.getCustomerId() + " so the customer sleeps \n");
 
                     //A random millisecond number between 4000 and 500
                     millisDelay = utility.Utility.getRandomNumberInRange(4000, 500);
                     Thread.sleep(millisDelay);
 
                     System.out.println("Customer " + customer.getCustomerId() +
-                            " has recieved a haircut by barber " + barberId
-                              + " in " + millisDelay + "milliseconds, and leaves the shop");
+                            " has received a haircut by barber " + barberId
+                              + " in " + millisDelay + " milliseconds, and leaves the shop \n");
 
                     customersCut.incrementAndGet();
 
                     //Checks if new customers have entered the shop
                     if (waitingList.size() > 0) {
                         System.out.println("Barber " + barberId +
-                                "wakes up a waiting customer in line");
+                                " wakes up a waiting customer in line \n");
                     }
 
                     availableBarbers++;
@@ -132,7 +132,7 @@ public class BarberShop {
      * @param customer the customer to be added
      */
     public void addNewCustomer(Customer customer) {
-        System.out.println("\n Customer " + customer.getCustomerId()
+        System.out.println("\nCustomer " + customer.getCustomerId()
                 + " entered the barber shop at " + utility.Utility.getCurrentTime());
 
         synchronized (waitingList) {
@@ -140,7 +140,7 @@ public class BarberShop {
             //Check if there are any available chairs
             if (waitingList.size() == numberOfChairs) {
                 System.out.println("\n No chair is available, customer " + customer.getCustomerId() +
-                        " Leaves the barber shop");
+                        " leaves the barber shop");
                 customersLost.incrementAndGet();
                 return;
 
@@ -150,11 +150,11 @@ public class BarberShop {
                 waitingList.notify();
 
             } else {
-
-                System.out.println("\n There are no available barbers, customer " + customer.getCustomerId() +
-                        " Sits down on an empty chair");
+                waitingList.addLast(customer);
+                System.out.println("\nThere are no available barbers, customer " + customer.getCustomerId() +
+                        " sits down on an empty chair");
                 if (waitingList.size() == 1) {
-                    waitingList.addLast(customer);
+                    waitingList.notify();
                 }
             }
         }

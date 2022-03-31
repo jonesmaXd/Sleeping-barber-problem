@@ -31,7 +31,7 @@ public class SleepingBarber {
                     " available barber(s)" +
                     " and " + numberOfChairs + " chairs for customers");
 
-            ExecutorService executorService = Executors.newFixedThreadPool(12);
+            ExecutorService executorService = Executors.newFixedThreadPool(50);
 
             //Initialises all the barber threads
             for (int i=0; i<numberOfBarbers; i++) {
@@ -55,9 +55,22 @@ public class SleepingBarber {
                 }
 
             }
-            executorService.shutdown();												//shuts down the executor service and frees all the resources
-            executorService.awaitTermination(12, SECONDS);
+            executorService.shutdown();
+            executorService.awaitTermination(3, SECONDS);
+            barberShop.closeShop();
 
+            double elapsedTime = (System.currentTimeMillis() - startTime)*0.001;
+            if(!barberShop.getShopOpen()){
+                System.out.println("\nBarbershop closes for the day\n" +
+                        "Total time used cutting " + numberOfCustomers + " customers by " +
+                        numberOfBarbers + " barbers with " + numberOfChairs +
+                        " chairs is: " + elapsedTime + " seconds");
+                System.out.println("In total there were:\n" +
+                        numberOfCustomers + " customers entered the shop\n" +
+                        barberShop.getCustomersLost() + " customers left the shop\n" +
+                        barberShop.getCustomersCut() + " customers which received a haircut");
+
+            }
 
         }
 
