@@ -1,6 +1,7 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,7 +16,7 @@ public class BarberShop {
     private int numberOfChairs;
     private Date currentTime;
     private LinkedList<Customer> waitingList;
-
+    private  Random random = new Random();
 
     public BarberShop(AtomicBoolean shopOpen,
                       AtomicInteger customersCut,
@@ -66,6 +67,67 @@ public class BarberShop {
         return formatter.format(currentTime);
     }
 
+
+    /**
+     *  Simulates cutting the hair of a customer
+     */
+    public void cutHair(int barberId) {
+
+        int millisDelay=0;
+        Customer customer;
+
+        synchronized (waitingList) {
+
+            //If there are no customers, go to sleep
+            if (waitingList.size() == 0 ) {
+                System.out.println("Barber " + barberId +
+                        " goes to sleep, waiting for next customer");
+                //Sleep until a customer arrives
+                try {
+                    waitingList.wait();
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+                //Gets the first customer in the waiting list and removes it
+                  }
+                    else {
+                customer = waitingList.pollFirst();
+                System.out.println("Customer " + customer.getCustomerId() +
+                " wakes up the barber and proceeds to get a haircut");
+
+                try {
+
+                    //Barber is unavailable as it cuts the hair of a customer
+                    availableBarbers--;
+                    System.out.println("Barber " + barberId +
+                            " is cutting the hair of customer " +
+                            customer.getCustomerId() + " so the customer sleeps");
+
+                    //A random millisecond number between 4000 and 500
+                    millisDelay = random.nextInt(4000 - 500) + 500;
+                    Thread.sleep(millisDelay);
+
+                    System.out.println("Customer " + customer.getCustomerId() +
+                            " has recieved a haircut by barber " + barberId
+                              + " in " + millisDelay + "milliseconds, and leaves the shop");
+
+                    customersCut.incrementAndGet();
+
+                    //Checks if new customers have entered the shop
+                    if (waitingList.size() > 0) {
+                        System.out.println("Barber " + barberId +
+                                "wakes up a waiting customer in line");
+                    }
+
+                    availableBarbers++;
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+        }
+    }
+
     /**
      * 'Creates' a new customer to the barbershop.
      * The customer will go through three alternatives;
@@ -74,7 +136,7 @@ public class BarberShop {
      * 3. However, if there is no empty chair to sit in, the customer will leave.
      * @param customer
      */
-    private void addNewCustomer(Customer customer) {
+    public void addNewCustomer(Customer customer) {
         System.out.println("\n Customer " + customer.getCustomerId()
                 + " entered the barber shop" + getCurrentTime());
 
@@ -96,16 +158,10 @@ public class BarberShop {
 
                 System.out.println("There are no available barbers, " + customer.getCustomerId() +
                         " Sits down on an empty chair");
+                if (waitingList.size() == 1) {
                     waitingList.addLast(customer);
-
-                    if (waitingList.size() == 1) {
-                    waitingList.notify();
                 }
             }
         }
-    }
-
-    private void cutHair() {
-
     }
 }

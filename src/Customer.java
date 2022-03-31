@@ -8,7 +8,7 @@ public class Customer implements Runnable {
 
     @Override
     public void run() {
-
+        getHairCut();
     }
 
     public int getCustomerId() {
@@ -27,4 +27,7 @@ public class Customer implements Runnable {
         this.barberShop = barberShop;
     }
 
+    private synchronized void getHairCut() {
+        barberShop.addNewCustomer(this);
+    }
 }
