@@ -1,7 +1,7 @@
 package no.ntnu;
 
 /**
- *
+ * A runnable object which represents a barber
  */
 public class Barber implements Runnable {
 
@@ -9,12 +9,22 @@ public class Barber implements Runnable {
     private BarberShop barberShop;
 
     public Barber(BarberShop barberShop, int barberId) {
-        this.barberShop = barberShop;
-        this.barberId = barberId;
+        if (barberShop == null) {
+            System.out.println("barberShop cannot be null");
+        } else {
+            this.barberShop = barberShop;
+        }
+        if (barberId < 0) {
+            System.out.println("BarberId cannot be less than 0");
+        } else {
+            this.barberId = barberId;
+        }
     }
 
     /**
-     *
+     * Barber loops through the cutHair method infinitely. This is fine because the
+     * thread will sleep if it has nothing to do, therefore, if you have many barbers
+     * it will not take an extreme amount of resources.
      */
     @Override
     public void run() {

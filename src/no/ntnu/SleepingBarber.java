@@ -4,13 +4,16 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
  */
 public class SleepingBarber {
 
+    /**
+     *
+     * @throws InterruptedException
+     */
     public void runSimulation() throws InterruptedException {
         int numberOfCustomers;
         int numberOfChairs;
@@ -19,7 +22,7 @@ public class SleepingBarber {
         numberOfBarbers = getUserIntResponse("barber");
         numberOfChairs = getUserIntResponse("chair");
         numberOfCustomers = getUserIntResponse("customer");
-        BarberShop barberShop = new BarberShop(true, numberOfChairs, numberOfBarbers, numberOfCustomers);
+        BarberShop barberShop = new BarberShop(true, numberOfChairs, numberOfBarbers);
 
 
         if(barberShop.getShopOpen()) {
@@ -28,8 +31,8 @@ public class SleepingBarber {
 
             System.out.println("\nThe barbershop is now open, " +
                     "it currently has " + numberOfBarbers +
-                    " available barber(s)" +
-                    " and " + numberOfChairs + " chairs for customers");
+                    " available barber(s) and " + numberOfChairs +
+                    " chairs for customers");
 
             ExecutorService executorService = Executors.newFixedThreadPool(50);
 
@@ -49,6 +52,7 @@ public class SleepingBarber {
 
 
                 try {
+                    //Each of the customer threads sleep
                     Thread.sleep(utility.Utility.getRandomNumberInRange(4000, 500));
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
@@ -56,15 +60,15 @@ public class SleepingBarber {
 
             }
             executorService.shutdown();
-            executorService.awaitTermination(3, SECONDS);
+            executorService.awaitTermination(5, SECONDS);
             barberShop.closeShop();
 
             double elapsedTime = (System.currentTimeMillis() - startTime)*0.001;
             if(!barberShop.getShopOpen()){
                 System.out.println("\nBarbershop closes for the day\n" +
                         "Total time used cutting " + numberOfCustomers + " customers by " +
-                        numberOfBarbers + " barbers with " + numberOfChairs +
-                        " chairs is: " + elapsedTime + " seconds");
+                        numberOfBarbers + " barber(s) with " + numberOfChairs +
+                        " chair(s) is: " + elapsedTime + " seconds");
                 System.out.println("In total there were:\n" +
                         numberOfCustomers + " customers entered the shop\n" +
                         barberShop.getCustomersLost() + " customers left the shop\n" +
@@ -75,7 +79,6 @@ public class SleepingBarber {
         }
 
     }
-
 
     /**
      *
