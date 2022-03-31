@@ -1,16 +1,17 @@
 package no.ntnu;
-
+import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  */
 public class SleepingBarber {
 
-    public void runSimulation() {
+    public void runSimulation() throws InterruptedException {
         int numberOfCustomers;
         int numberOfChairs;
         int numberOfBarbers;
@@ -18,10 +19,49 @@ public class SleepingBarber {
         numberOfBarbers = getUserIntResponse("barber");
         numberOfChairs = getUserIntResponse("chair");
         numberOfCustomers = getUserIntResponse("customer");
+        BarberShop barberShop = new BarberShop(true, numberOfChairs, numberOfBarbers, numberOfCustomers);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(16);
+
+        if(barberShop.getShopOpen()) {
+            //Tracks the start time of the simulation
+            long startTime = System.currentTimeMillis();
+
+            System.out.println("\nThe barbershop is now open, " +
+                    "it currently has " + numberOfBarbers +
+                    " available barber(s)" +
+                    " and " + numberOfChairs + " chairs for customers");
+
+            ExecutorService executorService = Executors.newFixedThreadPool(12);
+
+            //Initialises all the barber threads
+            for (int i=0; i<numberOfBarbers; i++) {
+                Barber barber = new Barber(barberShop, i);
+                Thread threadBarber = new Thread(barber);
+                executorService.execute(threadBarber);
+            }
+
+            //Initialises all the customer threads
+            for (int i=0; i<numberOfCustomers; i++) {
+                Customer customer = new Customer(barberShop);
+                Thread threadCustomer = new Thread(customer);
+                customer.setCustomerId(i);
+                executorService.execute(threadCustomer);
+
+
+                try {
+                    Thread.sleep(utility.Utility.getRandomNumberInRange(4000, 500));
+                } catch (InterruptedException e) {
+                    System.out.println(e.getMessage());
+                }
+
+            }
+            executorService.shutdown();												//shuts down the executor service and frees all the resources
+            executorService.awaitTermination(12, SECONDS);
+
 
         }
+
+    }
 
 
     /**
@@ -52,6 +92,10 @@ public class SleepingBarber {
 
     public static void main(String[] args) {
         SleepingBarber sleepingBarber = new SleepingBarber();
-        sleepingBarber.runSimulation();
+        try {
+            sleepingBarber.runSimulation();
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

@@ -8,6 +8,10 @@ public class Customer implements Runnable {
     private int customerId;
     private BarberShop barberShop;
 
+    public Customer(BarberShop barberShop) {
+        this.barberShop = barberShop;
+    }
+
     /**
      *
      */
@@ -22,14 +26,6 @@ public class Customer implements Runnable {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
-    }
-
-    public BarberShop getBarberShop() {
-        return barberShop;
-    }
-
-    public void setBarberShop(BarberShop barberShop) {
-        this.barberShop = barberShop;
     }
 
     private synchronized void getHairCut() {

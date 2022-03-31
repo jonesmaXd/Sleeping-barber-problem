@@ -8,40 +8,36 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class BarberShop {
 
-    private AtomicBoolean shopOpen;
-    private AtomicInteger customersCut;
-    private AtomicInteger customersLost;
+    private Boolean shopOpen;
+    private AtomicInteger customersCut = new AtomicInteger(0);
+    private AtomicInteger customersLost= new AtomicInteger(0);
     private int numberOfBarbers;
     private int numberOfCustomers;
     private int availableBarbers;
     private int numberOfChairs;
-    private Date currentTime;
     private LinkedList<Customer> waitingList;
 
-    public BarberShop(AtomicBoolean shopOpen,
-                      AtomicInteger customersCut,
-                      AtomicInteger customersLost,
+    public BarberShop(Boolean shopOpen,
                       int numberOfChairs,
                       int numberOfBarbers,
-                      int availableBarbers,
                       int numberOfCustomers) {
         this.shopOpen = shopOpen;
-        this.customersCut = customersCut;
-        this.customersLost = customersLost;
-        this.availableBarbers = availableBarbers;
-        this.numberOfBarbers = numberOfBarbers;
+        this.availableBarbers = numberOfBarbers;
         this.numberOfChairs = numberOfChairs;
         this.numberOfCustomers = numberOfCustomers;
         this.waitingList = new LinkedList<>();
     }
 
+    public Boolean getShopOpen() {
+        return shopOpen;
+    }
 
     private void closeShop() {
-        shopOpen.set(false);
+        shopOpen = false;
     }
 
     private void openShop() {
-        shopOpen.set(true);
+        shopOpen = true;
     }
 
     public AtomicInteger getCustomersCut() {
@@ -72,27 +68,32 @@ public class BarberShop {
         synchronized (waitingList) {
 
             //If there are no customers, go to sleep
-            if (waitingList.size() == 0 ) {
-                System.out.println("no.ntnu.Barber " + barberId +
+            while (waitingList.size() == 0) {
+
+                System.out.println("Barber " + barberId +
                         " goes to sleep, waiting for next customer");
+
                 //Sleep until a customer arrives
                 try {
                     waitingList.wait();
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
-                //Gets the first customer in the waiting list and removes it
-                  }
-                    else {
-                customer = waitingList.pollFirst();
-                System.out.println("no.ntnu.Customer " + customer.getCustomerId() +
-                " wakes up the barber and proceeds to get a haircut");
+            }
+
+            //Gets the first customer in the waiting list and removes it
+            customer = waitingList.pollFirst();
+
+            System.out.println("Customer " + customer.getCustomerId() +
+                    " wakes up the barber and proceeds to get a haircut");
+        }
 
                 try {
 
-                    //no.ntnu.Barber is unavailable as it cuts the hair of a customer
+                    //Barber is unavailable as it cuts the hair of a customer
                     availableBarbers--;
-                    System.out.println("no.ntnu.Barber " + barberId +
+
+                    System.out.println("Barber " + barberId +
                             " is cutting the hair of customer " +
                             customer.getCustomerId() + " so the customer sleeps");
 
@@ -100,7 +101,7 @@ public class BarberShop {
                     millisDelay = utility.Utility.getRandomNumberInRange(4000, 500);
                     Thread.sleep(millisDelay);
 
-                    System.out.println("no.ntnu.Customer " + customer.getCustomerId() +
+                    System.out.println("Customer " + customer.getCustomerId() +
                             " has recieved a haircut by barber " + barberId
                               + " in " + millisDelay + "milliseconds, and leaves the shop");
 
@@ -108,7 +109,7 @@ public class BarberShop {
 
                     //Checks if new customers have entered the shop
                     if (waitingList.size() > 0) {
-                        System.out.println("no.ntnu.Barber " + barberId +
+                        System.out.println("Barber " + barberId +
                                 "wakes up a waiting customer in line");
                     }
 
@@ -116,10 +117,9 @@ public class BarberShop {
                 } catch (InterruptedException e) {
                     System.out.println(e.getMessage());
                 }
-            }
+
 
         }
-    }
 
     /**
      * 'Creates' a new customer to the barbershop.
@@ -132,8 +132,8 @@ public class BarberShop {
      * @param customer the customer to be added
      */
     public void addNewCustomer(Customer customer) {
-        System.out.println("\n no.ntnu.Customer " + customer.getCustomerId()
-                + " entered the barber shop" + utility.Utility.getCurrentTime());
+        System.out.println("\n Customer " + customer.getCustomerId()
+                + " entered the barber shop at " + utility.Utility.getCurrentTime());
 
         synchronized (waitingList) {
 
@@ -159,4 +159,5 @@ public class BarberShop {
             }
         }
     }
+
 }

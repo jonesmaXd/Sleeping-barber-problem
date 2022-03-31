@@ -6,6 +6,7 @@ import java.util.Random;
 
 /**
  * A simple utility class for preventing code duplication
+ *
  * Note - It would be better practise to have two separate utility classes
  * for the random number and current time, but since the size of the project is rather small
  * there is only 1 class for all utilities, for simplicity.
