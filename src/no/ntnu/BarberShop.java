@@ -114,8 +114,8 @@ public class BarberShop {
             //Gets the first customer in the waiting list and removes it
             customer = waitingList.pollFirst();
 
-            System.out.println("\nCustomer " + customer.getCustomerId() +
-                    " wakes up the barber and proceeds to get a haircut");
+            System.out.println("Customer " + customer.getCustomerId() +
+                    " proceeds to get a haircut");
         }
 
         try {
@@ -169,7 +169,7 @@ public class BarberShop {
 
             //Check if there are any available chairs
             if (waitingList.size() == numberOfChairs && availableBarbers == 0) {
-                System.out.println("\nNo chair is available, customer " + customer.getCustomerId() +
+                System.out.println("No chair is available, customer " + customer.getCustomerId() +
                         " leaves the barber shop");
                 customersLost.incrementAndGet();
                 return;
@@ -181,7 +181,7 @@ public class BarberShop {
 
             } else {
                 waitingList.addLast(customer);
-                System.out.println("\nThere are no available barbers, customer " + customer.getCustomerId() +
+                System.out.println("There are no available barbers, customer " + customer.getCustomerId() +
                         " sits down on an empty chair");
                 if (waitingList.size() == 1) {
                     waitingList.notify();

@@ -1,7 +1,7 @@
 package no.ntnu;
 
 /**
- * represents a customer in a barbershop
+ * A runnable object which represents a customer in a barbershop
  */
 public class Customer implements Runnable {
 
@@ -25,13 +25,17 @@ public class Customer implements Runnable {
         getHairCut();
     }
 
+    /**
+     * Gets the customer's id.
+     * @return the customer's id.
+     */
     public int getCustomerId() {
         return customerId;
     }
 
     /**
-     * sets a new customer id
-     * @param customerId the new customer id
+     * sets a new customer id.
+     * @param customerId the new customer id.
      */
     public void setCustomerId(int customerId) {
         if (customerId < 0) {
@@ -42,9 +46,10 @@ public class Customer implements Runnable {
     }
 
     /**
-     *
+     * Simulates a customer going for a haircut.
+     * This will add a new customer to the barbershop.
      */
-    private synchronized void getHairCut() {
+    private void getHairCut() {
         barberShop.addNewCustomer(this);
     }
 }

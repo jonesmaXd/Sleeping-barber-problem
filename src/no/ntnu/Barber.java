@@ -1,7 +1,7 @@
 package no.ntnu;
 
 /**
- * A runnable object which represents a barber
+ * A runnable object which represents a barber in a barbershop
  */
 public class Barber implements Runnable {
 
