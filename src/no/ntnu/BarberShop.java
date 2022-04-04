@@ -90,7 +90,7 @@ public class BarberShop {
      *
      * @param barberId a created barber's id to
      */
-    public void cutHair(int barberId) {
+    public void cutCustomerHair(int barberId) {
 
         int millisDelay = 0;
         Customer customer;

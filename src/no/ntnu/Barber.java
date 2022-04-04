@@ -29,7 +29,7 @@ public class Barber implements Runnable {
     @Override
     public void run() {
         while (true) {
-            barberShop.cutHair(barberId);
+            barberShop.cutCustomerHair(barberId);
         }
     }
 }

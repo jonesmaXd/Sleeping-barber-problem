@@ -16,15 +16,11 @@ public class SleepingBarber {
      * @throws InterruptedException if executor service encounters a problem shutting down
      */
     public void runSimulation() throws InterruptedException {
-        int numberOfCustomers;
-        int numberOfChairs;
-        int numberOfBarbers;
 
-        numberOfBarbers = getUserIntResponse("barber");
-        numberOfChairs = getUserIntResponse("chair");
-        numberOfCustomers = getUserIntResponse("customer");
+        int numberOfBarbers = getUserIntResponse("barber");
+        int numberOfChairs = getUserIntResponse("chair");
+        int numberOfCustomers = getUserIntResponse("customer");
         BarberShop barberShop = new BarberShop(true, numberOfChairs, numberOfBarbers);
-
 
         if(barberShop.getShopOpen()) {
             //Tracks the start time of the simulation
@@ -35,32 +31,11 @@ public class SleepingBarber {
                     " available barber(s) and " + numberOfChairs +
                     " chairs for customers");
 
-            ExecutorService executorService = Executors.newFixedThreadPool(50);
+            ExecutorService executorService = Executors.newFixedThreadPool(numberOfCustomers);
 
-            //Initialises all the barber threads
-            for (int i=0; i<numberOfBarbers; i++) {
-                Barber barber = new Barber(barberShop, i);
-                Thread threadBarber = new Thread(barber);
-                executorService.execute(threadBarber);
-            }
+            initializeBarbers(numberOfBarbers, executorService, barberShop);
+            initializeCustomers(numberOfCustomers, executorService, barberShop);
 
-            //Initialises all the customer threads
-            for (int i=0; i<numberOfCustomers; i++) {
-                Customer customer = new Customer(barberShop);
-                Thread threadCustomer = new Thread(customer);
-                customer.setCustomerId(i);
-                executorService.execute(threadCustomer);
-
-
-                try {
-                    //Makes each customer thread sleep a number of milliseconds between 4000 and 500
-                    //This is to simulate the delay between each customer entering the barber shop
-                    Thread.sleep(utility.Utility.getRandomNumberInRange(4000, 500));
-                } catch (InterruptedException e) {
-                    System.out.println(e.getMessage());
-                }
-
-            }
             //Shuts down the executor service
             executorService.shutdown();
 
@@ -78,12 +53,49 @@ public class SleepingBarber {
                         numberOfCustomers + " customers entered the shop\n" +
                         barberShop.getCustomersLost() + " customers left the shop\n" +
                         barberShop.getCustomersCut() + " customers which received a haircut");
+            }
+        }
+    }
 
+    /**
+     *
+     * @param numberOfBarbers
+     * @param executorService
+     * @param barberShop
+     */
+    public void initializeBarbers (int numberOfBarbers, ExecutorService executorService, BarberShop barberShop) {
+        for (int i=0; i<numberOfBarbers; i++) {
+            Barber barber = new Barber(barberShop, i);
+            Thread threadBarber = new Thread(barber);
+            executorService.execute(threadBarber);
+        }
+    }
+
+    /**
+     *
+     * @param numberOfCustomers
+     * @param executorService
+     * @param barberShop
+     */
+    private void initializeCustomers (int numberOfCustomers, ExecutorService executorService, BarberShop barberShop) {
+        for (int i=0; i<numberOfCustomers; i++) {
+            Customer customer = new Customer(barberShop);
+            Thread threadCustomer = new Thread(customer);
+            customer.setCustomerId(i);
+            executorService.execute(threadCustomer);
+
+            try {
+                //Makes each customer thread sleep a number of milliseconds between 4000 and 500
+                //This is to simulate the delay between each customer entering the barber shop
+                Thread.sleep(utility.Utility.getRandomNumberInRange(4000, 500));
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
             }
 
         }
-
     }
+
+
 
     /**
      * A custom method which asks for and reads user input to get the total number of
