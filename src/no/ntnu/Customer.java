@@ -27,6 +27,7 @@ public class Customer implements Runnable {
 
     /**
      * Gets the customer's id.
+     *
      * @return the customer's id.
      */
     public int getCustomerId() {
@@ -35,6 +36,7 @@ public class Customer implements Runnable {
 
     /**
      * sets a new customer id.
+     *
      * @param customerId the new customer id.
      */
     public void setCustomerId(int customerId) {

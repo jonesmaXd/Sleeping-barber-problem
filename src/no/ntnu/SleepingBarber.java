@@ -58,10 +58,11 @@ public class SleepingBarber {
     }
 
     /**
+     * Initializes all the barber threads
      *
-     * @param numberOfBarbers
-     * @param executorService
-     * @param barberShop
+     * @param numberOfBarbers the amount of customers to initialize
+     * @param executorService the executor service to start the threads
+     * @param barberShop the barbershop the customers belong to
      */
     public void initializeBarbers (int numberOfBarbers, ExecutorService executorService, BarberShop barberShop) {
         for (int i=0; i<numberOfBarbers; i++) {
@@ -72,10 +73,11 @@ public class SleepingBarber {
     }
 
     /**
+     * Initializes all the customer threads
      *
-     * @param numberOfCustomers
-     * @param executorService
-     * @param barberShop
+     * @param numberOfCustomers the amount of customers to initialize
+     * @param executorService the executor service to start the threads
+     * @param barberShop the barbershop the customers belong to
      */
     private void initializeCustomers (int numberOfCustomers, ExecutorService executorService, BarberShop barberShop) {
         for (int i=0; i<numberOfCustomers; i++) {

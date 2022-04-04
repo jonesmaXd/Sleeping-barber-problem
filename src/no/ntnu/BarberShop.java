@@ -66,6 +66,7 @@ public class BarberShop {
 
     /**
      * Returns the amount of customers which have received a haircut.
+     *
      * @return the amount of customers.
      */
     public AtomicInteger getCustomersCut() {
@@ -75,6 +76,7 @@ public class BarberShop {
     /**
      * Returns the amount of customers which have left the barber shop
      * due to there not being enough chairs to wait in.
+     *
      * @return the amount of customers.
      */
     public AtomicInteger getCustomersLost() {
@@ -88,7 +90,7 @@ public class BarberShop {
      * will cut the customer's hair. While the barber is busy
      * cutting hair the barber will not do any other tasks.
      *
-     * @param barberId a created barber's id to
+     * @param barberId the barber's id
      */
     public void cutCustomerHair(int barberId) {
 
